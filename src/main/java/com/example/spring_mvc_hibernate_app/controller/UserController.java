@@ -1,10 +1,11 @@
 package com.example.spring_mvc_hibernate_app.controller;
 
-import com.example.spring_mvc_hibernate_app.entity.User;
 import com.example.spring_mvc_hibernate_app.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -24,7 +25,7 @@ public class UserController {
     @PostMapping("/addUser")
     public String addUser(@RequestParam("name") String name,
                           @RequestParam("email") String email) {
-        service.saveUser(new User(name, email));
+        service.createUser(name, email);
         return "redirect:/users";
     }
 
@@ -32,12 +33,7 @@ public class UserController {
     public String updateUser(@RequestParam("id") Long id,
                              @RequestParam("name") String name,
                              @RequestParam("email") String email) {
-        User user = service.getUserById(id);
-        if (user != null) {
-            user.setName(name);
-            user.setEmail(email);
-            service.saveUser(user);
-        }
+        service.updateUser(id, name, email);
         return "redirect:/users";
     }
 
@@ -46,5 +42,4 @@ public class UserController {
         service.deleteUser(id);
         return "redirect:/users";
     }
-
 }

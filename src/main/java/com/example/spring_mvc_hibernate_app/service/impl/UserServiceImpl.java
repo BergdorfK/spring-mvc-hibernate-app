@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
@@ -29,11 +29,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveUser(User user) {
+    @Transactional
+    public void createUser(String name, String email) {
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
         repository.save(user);
     }
 
     @Override
+    @Transactional
+    public void updateUser(Long id, String name, String email) {
+        User user = repository.findById(id);
+        if (user == null) {
+            throw new RuntimeException("User with id=" + id + " not found");
+        }
+        user.setName(name);
+        user.setEmail(email);
+        repository.update(user);
+    }
+
+    @Override
+    @Transactional
     public void deleteUser(Long id) {
         repository.delete(id);
     }
